@@ -1,8 +1,8 @@
 {
-  "name": "CT-GenAI Go-Live – Przygotowanie do egzaminu ISTQB® CT-GenAI",
+  "name": "CT-GenAI Go-Live – ISTQB® CT-GenAI exam preparation",
   "short_name": "CT-GenAI",
-  "description": "Kurs przygotowujący do egzaminu ISTQB® Certified Tester – Testing with Generative AI (sylabus v1.1). Treść po angielsku, jak na egzaminie.",
-  "lang": "pl",
+  "description": "A phone course preparing for the ISTQB® Certified Tester – Testing with Generative AI (CT-GenAI) exam, syllabus v1.1.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

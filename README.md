@@ -1,25 +1,38 @@
 # CT-GenAI Go-Live
 
-Kurs przygotowujący do egzaminu ISTQB® Certified Tester – Testing with Generative AI (sylabus v1.1). Treść po angielsku, jak na egzaminie.
+A phone course preparing for the ISTQB® Certified Tester – Testing with Generative AI (CT-GenAI) exam, syllabus v1.1.
 
-Wersja treści: **1** · 1 etap, 5 lekcji, 26 kart
+Content version: **3** · 4 stages, 20 lessons, 103 cards
 
-## Spis treści
+## What’s new in version 3
+
+- **Stages 2–4 are here:** 15 new lessons, 77 new terms and three more project reviews – the whole CT-GenAI syllabus.
+- **The whole app is in English** – menus, buttons and help texts match the course content.
+- Abbreviations (LLM, NLP, RAG, LLMOps) now get their own practice and speed round.
+- Your progress, notes and badges stay exactly as they were.
+
+## Contents
 
 1. **Meet the Model** – How LLMs work, which model fits which job, and how a good prompt is built.
    - The AI Family Tree · How an LLM Reads · Know Your Models · Anatomy of a Prompt · Shots, Chains and Meta
+2. **Prompting the Test Process** – GenAI across test analysis, design, regression and monitoring – and how to pick the technique.
+   - Two Voices, One Toolbox · Test Analysis with GenAI · Design and Implement · Regression on Autopilot · Monitor and Steer
+3. **Trust, but Verify** – Measuring GenAI output, refining prompts – and the risks: model errors, randomness, data and attacks.
+   - Is the Output Any Good? · Refine and Compare · When the Model Is Wrong · Taming Errors and Randomness · Data at Risk
+4. **Ready for Go-Live** – Data protection, energy and regulation; test infrastructure with RAG and agents – and bringing GenAI into a test organization.
+   - Protect, Save, Comply · Inside the Test Infrastructure · Agents, Fine-Tuning, LLMOps · Strategy Before Tools · People and Phases
 
-## Jak zainstalować na telefonie
+## Install on your phone
 
-- Android (Chrome): otwórz adres kursu → menu ⋮ → **Zainstaluj aplikację** albo „Dodaj do ekranu głównego”.
-- iPhone (Safari): otwórz adres kursu → **Udostępnij** → **Do ekranu początkowego**.
+- Android (Chrome): open the course address → menu ⋮ → **Install app** or “Add to Home screen”.
+- iPhone (Safari): open the course address → **Share** → **Add to Home Screen**.
 
-## Postęp
+## Progress
 
-Postęp zapisuje się tylko w przeglądarce na telefonie – nic nie trafia na serwer. Aktualizacje kursu go nie kasują. Przed większą zmianą (nowy telefon, czyszczenie przeglądarki) warto zrobić kopię: Ustawienia → Kopia zapasowa postępu → „Pobierz kopię”.
+Progress is stored only in the browser on your phone – nothing is sent to a server. Course updates do not erase it. Before a bigger change (new phone, clearing the browser) make a backup: Settings → Progress backup → “Download backup”.
 
-Po aktualizacji kursu wystarczy zamknąć i otworzyć aplikację (czasem dwa razy), żeby wczytała nową wersję.
+After a course update, close and reopen the app (sometimes twice) to load the new version.
 
-## Pliki
+## Files
 
-`index.html` (cały kurs), `manifest.webmanifest` i `sw.js` (instalacja i tryb offline), trzy ikony `icon-*.png`, ten `README.md`.
+`index.html` (the whole course), `manifest.webmanifest` and `sw.js` (install and offline mode), three icons `icon-*.png`, this `README.md`.
