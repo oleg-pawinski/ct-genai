@@ -2,14 +2,13 @@
 
 A phone course preparing for the ISTQB® Certified Tester – Testing with Generative AI (CT-GenAI) exam, syllabus v1.1.
 
-Content version: **3** · 4 stages, 20 lessons, 103 cards
+Content version: **4** · 4 stages, 20 lessons, 103 cards
 
-## What’s new in version 3
+## What’s new in version 4
 
-- **Stages 2–4 are here:** 15 new lessons, 77 new terms and three more project reviews – the whole CT-GenAI syllabus.
-- **The whole app is in English** – menus, buttons and help texts match the course content.
-- Abbreviations (LLM, NLP, RAG, LLMOps) now get their own practice and speed round.
-- Your progress, notes and badges stay exactly as they were.
+- **No more open task at the end of a lesson.** The exam has only multiple-choice questions, so each lesson now ends after ‘Check yourself’.
+- The Notebook keeps your starred terms; the Notebook badge now asks for 10 starred terms.
+- Your progress, reviews and badges stay exactly as they were.
 
 ## Contents
 

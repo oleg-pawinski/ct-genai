@@ -353,6 +353,7 @@ window.COURSE = {
   config: {
     id: "ct-genai",
     lang: "en",
+    tasks: false,
     title: "CT-GenAI Go-Live",
     shortName: "CT-GenAI",
     subtitle: "ISTQB® CT-GenAI exam preparation",
@@ -360,8 +361,8 @@ window.COURSE = {
     mark: "AI",
     palette: "ocean",
     goal: 5,
-    version: 3,
-    news: "- **Stages 2–4 are here:** 15 new lessons, 77 new terms and three more project reviews – the whole CT-GenAI syllabus.\n- **The whole app is in English** – menus, buttons and help texts match the course content.\n- Abbreviations (LLM, NLP, RAG, LLMOps) now get their own practice and speed round.\n- Your progress, notes and badges stay exactly as they were.",
+    version: 4,
+    news: "- **No more open task at the end of a lesson.** The exam has only multiple-choice questions, so each lesson now ends after ‘Check yourself’.\n- The Notebook keeps your starred terms; the Notebook badge now asks for 10 starred terms.\n- Your progress, reviews and badges stay exactly as they were.",
     labels: {
       unit1: "term", unit2: "terms", unit5: "terms",
       unitNew1: "new term", unitNew2: "new terms", unitNew5: "new terms",
@@ -380,7 +381,7 @@ window.COURSE = {
       dictSearch: "Search: token, few-shot, RAG…",
       dictPeek: "Show terms from later lessons too",
       notesTitle: "Notebook", notesStars: "Review before the exam", notesFile: "CT-GenAI-notes",
-      notesIntro: "Starred terms and your hands-on task answers collect here – useful before job interviews, too.",
+      notesIntro: "Terms you star collect here – your personal review list before the exam.",
       flashIntro: "60 seconds, as many as you can. In the exam you have about one and a half to two minutes per question – the terms must come instantly so that time is left for the scenarios.",
       flashB: "Match meanings",
       newLine: "You are starting your ISTQB® CT-GenAI exam preparation. The first lesson takes about 20 minutes.",
@@ -2311,6 +2312,9 @@ const CFG = {
   goal: C0.goal || 3, exam: EXAM.n || 20
 };
 const BOSS_PASS = BOSS.pass, DEMO_PASS = EXAM.pass;
+// config.tasks === false: kurs bez zadań otwartych (np. egzamin testowy) – lekcja kończy się na pytaniach
+const TASKS = C0.tasks !== false;
+const hasTask = l => TASKS && !!l.task;
 const EXAM_N = Math.max(6, Math.min(TOTAL, EXAM.n || 20));
 const LEVELS = (C0.levels && C0.levels.length === 6) ? C0.levels : EN ? [
   { min: 0, code: 'A1', name: 'Beginning', note: 'First steps. Everyone starts here.' },
@@ -2357,6 +2361,7 @@ if (EN) {
   };
   BADGES.forEach(b => { const e = BE[b.id]; if (e) { if (e[0]) b.name = e[0]; b.desc = e[1]; } });
 }
+if (!TASKS) { const b = BADGES.find(x => x.id === 'notes'); if (b) b.desc = EN ? 'Star 10 cards to review before the exam.' : 'Zaznacz 10 kart do powtórki.'; }
 const VERSION = +C0.version || 1;
 const OK_WORDS = C0.okWords || (EN ? ['Correct.', 'Spot on.', 'Exactly.', 'Well done.', 'That’s it.'] : ['Dobrze!', 'Trafione.', 'Dokładnie tak.', 'Brawo!', 'Tak jest.']);
 const BAD_WORDS = C0.badWords || (EN ? ['Not this time.', 'Almost.', 'Not quite.', 'Missed – but this is how it sticks.'] : ['Nie tym razem.', 'Prawie.', 'To nie to.', 'Pudło – ale właśnie tak się utrwala.']);
@@ -2416,7 +2421,7 @@ const TX = EN ? {
   toGoal: k => `${k} more ${plural(k, 'session', 'sessions', 'sessions')} to reach your weekly goal.`,
   hello: 'Hi', howTitle: 'How this course works',
   how1: (ln, sn, tot, goal, w) => `<strong>${ln} ${plural(ln, 'lesson', 'lessons', 'lessons')} in ${sn} ${plural(sn, 'stage', 'stages', 'stages')}, ${tot} ${L.unit5}.</strong> At ${goal} ${plural(goal, 'session', 'sessions', 'sessions')} a week that is about ${w}–${w + 3} weeks.`,
-  how2: () => `<strong>Every session has the same rhythm:</strong> a warm-up of reviews, ${L.unitNew2}, ${lc(L.quizPhase)} and one ${lc(L.taskTitle)}.`,
+  how2: () => `<strong>Every session has the same rhythm:</strong> a warm-up of reviews, ${L.unitNew2}${TASKS ? `, ${lc(L.quizPhase)} and one ${lc(L.taskTitle)}` : ` and ${lc(L.quizPhase)}`}.`,
   how4: '<strong>Cards come back at growing intervals</strong> (1, 3, 7, 16, 35 days) until they stick for good – so say your answer out loud before you turn the card.',
   how5: () => `<strong>${esc(BOSS.name)} closes each stage</strong> – quick timed questions. Pass from ${pct(BOSS.pass)} to unlock the next stage.`,
   thisWeek: 'This week',
@@ -2514,7 +2519,7 @@ const TX = EN ? {
   toGoal: k => `Jeszcze ${k} ${plural(k, 'sesja', 'sesje', 'sesji')} do celu tygodnia.`,
   hello: 'Cześć', howTitle: 'Jak działa ten kurs',
   how1: (ln, sn, tot, goal, w) => `<strong>${ln} ${plural(ln, 'lekcja', 'lekcje', 'lekcji')} w ${sn} ${plural(sn, 'etapie', 'etapach', 'etapach')}, ${tot} ${L.unit5}.</strong> Przy ${goal} ${plural(goal, 'sesji', 'sesjach', 'sesjach')} w tygodniu to ok. ${w}–${w + 3} ${plural(w + 3, 'tydzień', 'tygodnie', 'tygodni')}.`,
-  how2: () => `<strong>Każda sesja ma stały rytm:</strong> rozgrzewka z powtórek, ${L.unitNew2}, ${lc(L.quizPhase)} i jedno ${lc(L.taskTitle)}.`,
+  how2: () => `<strong>Każda sesja ma stały rytm:</strong> rozgrzewka z powtórek, ${L.unitNew2}${TASKS ? `, ${lc(L.quizPhase)} i jedno ${lc(L.taskTitle)}` : ` i ${lc(L.quizPhase)}`}.`,
   how4: '<strong>Karty wracają w rosnących odstępach</strong> (1, 3, 7, 16, 35 dni), aż zostaną w głowie na stałe. Dlatego mów odpowiedzi na głos, zanim odkryjesz kartę.',
   how5: () => `<strong>Na końcu etapu czeka ${lc(BOSS.name)}</strong> – szybkie pytania na czas. Zaliczasz od ${pct(BOSS.pass)} i otwierasz kolejny etap.`,
   thisWeek: 'Ten tydzień',
@@ -2670,7 +2675,7 @@ function checkBadges() {
   if ((S.bestRun || 0) >= 10) award('perfect');
   if (Object.keys(S.days).length >= 30) award('marathon');
   const notesN = Object.values(S.notes).filter(v => String(v).trim().length >= 20).length;
-  if (Object.keys(S.stars).length >= 5 && notesN >= 5) award('notes');
+  if (TASKS ? (Object.keys(S.stars).length >= 5 && notesN >= 5) : Object.keys(S.stars).length >= 10) award('notes');
   STAGES.forEach(st => { if (st.badge && (S.boss[st.id] || 0) >= BOSS_PASS) award('st_' + st.id); });
   if ((S.demo || 0) >= DEMO_PASS) award('demo');
 }
@@ -2737,7 +2742,7 @@ function lessonSteps(ls, replay) {
   older.forEach(id => qs.push({ type: 'quiz', q: qAuto(CARDS[id], ['exp', 'rev', 'def', 'phrase']), ph: L.quizPhase }));
   shuffle(qs).forEach(s => steps.push(s));
   steps.push({ type: 'mark', lesson: ls });
-  steps.push({ type: 'task', lesson: ls });
+  if (hasTask(ls)) steps.push({ type: 'task', lesson: ls });
   return steps;
 }
 function bossSteps(st) {
@@ -2908,7 +2913,7 @@ function heroHTML(p) {
     const Ls = p.lesson; title = TX.lessonN(Ls.n, Ls.title);
     if (rev) lines.push(rev);
     lines.push(`${Ls.cards.length} ${unitNew(Ls.cards.length)}: ${Ls.cards.map(c => c.t).join(', ')}`);
-    lines.push(`${L.quizPhase}${TX.and}${lc(L.taskTitle)}`); est = Math.round(due * 0.4 + Ls.cards.length * 2.4 + 4);
+    lines.push(hasTask(Ls) ? `${L.quizPhase}${TX.and}${lc(L.taskTitle)}` : L.quizPhase); est = Math.round(due * 0.4 + Ls.cards.length * 2.4 + 4);
   } else {
     title = TX.reviewsTitle; lines = [rev || TX.nothingWaiting]; est = Math.max(3, Math.round(due * 0.4));
   }
@@ -3185,12 +3190,12 @@ function renderDictList() {
 let noteTimers = {};
 function renderNotes() {
   const starred = CARD_LIST.filter(c => S.stars[c.id]);
-  const withTask = LESSONS.filter(l => S.lessonsDone[l.id] || S.notes[l.id]);
+  const withTask = LESSONS.filter(l => hasTask(l) && (S.lessonsDone[l.id] || S.notes[l.id]));
   let h = `<h1>${esc(L.notesTitle)}</h1><p class="muted">${esc(L.notesIntro)}</p>`;
   h += `<h2>${esc(L.notesStars)} (${starred.length})</h2>`;
   h += starred.length ? starred.map(c => `<div class="starred"><div><b>${esc(c.t)}</b><br><span>${esc(c.sub)}</span></div><button class="pill on" data-act="star" data-id="${c.id}" aria-pressed="true">${esc(TX.unstar)}</button></div>`).join('') : `<p class="small muted">${esc(TX.starHint(L.dictTitle))}</p>`;
-  h += `<h2>${esc(TX.tasksTitle)}</h2>`;
-  h += withTask.length ? withTask.map(l => `<div class="note"><div class="nt">${TX.lessonN(l.n, esc(l.title))}</div><p class="np">${esc(l.task)}</p>${l.hint && S.lessonsDone[l.id] ? `<p class="small muted"><strong>${esc(L.hintTitle)}:</strong> ${esc(l.hint)}</p>` : ''}<textarea data-note="${l.id}" placeholder="${esc(TX.yourAnswer)}">${esc(S.notes[l.id] || '')}</textarea><div class="saved" id="saved-${l.id}"></div></div>`).join('') : `<p class="small muted">${esc(TX.firstTask)}</p>`;
+  if (TASKS) h += `<h2>${esc(TX.tasksTitle)}</h2>`;
+  if (TASKS) h += withTask.length ? withTask.map(l => `<div class="note"><div class="nt">${TX.lessonN(l.n, esc(l.title))}</div><p class="np">${esc(l.task)}</p>${l.hint && S.lessonsDone[l.id] ? `<p class="small muted"><strong>${esc(L.hintTitle)}:</strong> ${esc(l.hint)}</p>` : ''}<textarea data-note="${l.id}" placeholder="${esc(TX.yourAnswer)}">${esc(S.notes[l.id] || '')}</textarea><div class="saved" id="saved-${l.id}"></div></div>`).join('') : `<p class="small muted">${esc(TX.firstTask)}</p>`;
   h += `<h2>${esc(TX.exportTitle)}</h2><p class="small muted">${esc(TX.exportIntro)}</p><div class="btnrow"><button class="btn" data-act="notes-dl">${esc(TX.dlFile)}</button><button class="btn ghost" data-act="notes-copy">${esc(TX.copyAll)}</button></div>`;
   $view.innerHTML = h;
 }
@@ -3199,8 +3204,8 @@ function notesMarkdown() {
   let m = TX.mdHead(L.notesFile, CFG.title, d) + `## ${L.notesStars}\n\n`;
   const starred = CARD_LIST.filter(c => S.stars[c.id]);
   m += starred.length ? starred.map(c => `- **${c.t}**${c.exp ? ` (${c.exp})` : ''} – ${c.sub}${c.f ? ` ${L.secF}: ${c.f}.` : ''}`).join('\n') : TX.none;
-  m += `\n\n## ${TX.tasksTitle}\n`;
-  LESSONS.forEach(l => { if (S.notes[l.id]) m += `\n### ${TX.lessonN(l.n, l.title)}\n\n**${TX.mdTask}:** ${l.task}\n\n${l.hint ? `**${L.hintTitle}:** ${l.hint}\n\n` : ''}${S.notes[l.id]}\n`; });
+  if (TASKS) m += `\n\n## ${TX.tasksTitle}\n`;
+  LESSONS.forEach(l => { if (hasTask(l) && S.notes[l.id]) m += `\n### ${TX.lessonN(l.n, l.title)}\n\n**${TX.mdTask}:** ${l.task}\n\n${l.hint ? `**${L.hintTitle}:** ${l.hint}\n\n` : ''}${S.notes[l.id]}\n`; });
   return m;
 }
 function blobDownload(name, text, type) {
