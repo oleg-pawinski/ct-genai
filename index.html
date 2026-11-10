@@ -361,8 +361,8 @@ window.COURSE = {
     mark: "AI",
     palette: "ocean",
     goal: 5,
-    version: 4,
-    news: "- **No more open task at the end of a lesson.** The exam has only multiple-choice questions, so each lesson now ends after ‘Check yourself’.\n- The Notebook keeps your starred terms; the Notebook badge now asks for 10 starred terms.\n- Your progress, reviews and badges stay exactly as they were.",
+    version: 6,
+    news: "- **More time for timed questions.** Exam Day: 30 minutes for 30 questions on one shared clock (instead of 25 seconds each). The 6 quick questions in project reviews: 45 seconds each (instead of 20).\n- The Exam Day clock stops while you read the explanation after each answer.\n- Your progress, best scores and badges stay exactly as they were.",
     labels: {
       unit1: "term", unit2: "terms", unit5: "terms",
       unitNew1: "new term", unitNew2: "new terms", unitNew5: "new terms",
@@ -388,15 +388,15 @@ window.COURSE = {
       about: "<strong>Everything follows the ISTQB® CT-GenAI syllabus v1.1</strong>, with terms worded as in the exam. The ‘Exam trap’ section shows a typical wrong lead in ISTQB questions – especially where the answer key follows the syllabus more literally than everyday practice would. Card questions are short; longer scenarios wait in the Friday project reviews and in the practice exams. The course was written independently on the basis of the syllabus (© ISTQB®; authors: Abbas Ahmad, Gualtiero Bazzana, Alessandro Collino, Olivier Denoo, Bruno Legeard) and is not official or accredited ISTQB® material. Kettle Lane and Steepy are fictional."
     },
     boss: {
-      name: "Project review", icon: "📋", pass: 0.65, go: "Join the meeting",
+      name: "Project review", icon: "📋", pass: 0.65, sec: 45, go: "Join the meeting",
       winTitle: "Review passed", loseTitle: "One more iteration"
     },
     exam: {
-      name: "Exam Day", icon: "🎓", pass: 0.8, n: 30, go: "Start",
+      name: "Exam Day", icon: "🎓", pass: 0.8, n: 30, sec: 60, pace: "total", go: "Start",
       kicker: "Course finale",
-      scene: "A fluency test: questions from the whole course, 25 seconds each. The real exam gives you more time per question but demands the same confidence with the terms. Full 40-question simulations are in the practice exams.",
-      winTitle: "Terms mastered", loseTitle: "So close",
-      winLine: "The syllabus terms come to you instantly."
+      scene: "30 questions from the whole course and 30 minutes for all of them – one minute per question on average, a little faster than the real exam (40 questions in 75 minutes with the extra time for non-native speakers), so you will have time to spare there. Spend longer on the scenarios and less on the quick terms. The clock stops while you read an explanation.",
+      winTitle: "Exam pace mastered", loseTitle: "So close",
+      winLine: "You answer faster than the real exam requires."
     },
     levels: [
       { min: 0, code: "PR", name: "Prompt Rookie", note: "Day one with the model. Everyone starts here." },
@@ -2299,12 +2299,12 @@ const L = Object.assign({
   about: ''
 }, EN ? L_EN : {}, C0.labels || {});
 const BOSS = Object.assign({
-  name: 'Sprawdzian etapu', icon: '🤝', pass: 0.65, go: 'Zaczynam',
+  name: 'Sprawdzian etapu', icon: '🤝', pass: 0.65, go: 'Zaczynam', sec: 20,
   winTitle: 'Zaliczone!', loseTitle: 'Jeszcze nie tym razem', nextWord: 'Sprawdzian'
 }, EN ? { name: 'Stage test', go: 'Start', winTitle: 'Passed', loseTitle: 'Not this time', nextWord: 'Test' } : {}, C0.boss || {});
 const EXAM = Object.assign({
   name: 'Egzamin końcowy', icon: '🏆', pass: 0.8, go: 'Zaczynam',
-  kicker: 'Wielki finał', scene: 'Pytania z całego kursu, na każde 25 sekund.',
+  kicker: 'Wielki finał', scene: 'Pytania z całego kursu, na każde 25 sekund.', sec: 25, pace: 'question',
   winTitle: 'Zaliczone!', loseTitle: 'Niewiele zabrakło', winLine: 'Cały materiał masz w głowie.'
 }, EN ? { name: 'Final exam', go: 'Start', kicker: 'Grand finale', scene: 'Questions from the whole course, 25 seconds each.', winTitle: 'Passed', loseTitle: 'So close', winLine: 'You have the whole course in your head.' } : {}, C0.exam || {});
 const CFG = {
@@ -2312,10 +2312,16 @@ const CFG = {
   goal: C0.goal || 3, exam: EXAM.n || 20
 };
 const BOSS_PASS = BOSS.pass, DEMO_PASS = EXAM.pass;
+// boss.sec: sekundy na każde z 6 szybkich pytań sprawdzianu etapu (domyślnie 20)
+const BOSS_SEC = Math.max(5, +BOSS.sec || 20);
 // config.tasks === false: kurs bez zadań otwartych (np. egzamin testowy) – lekcja kończy się na pytaniach
 const TASKS = C0.tasks !== false;
 const hasTask = l => TASKS && !!l.task;
 const EXAM_N = Math.max(6, Math.min(TOTAL, EXAM.n || 20));
+// exam.sec: sekundy na pytanie; exam.pace: 'question' (osobny zegar na każde pytanie) albo 'total'
+// (wspólna pula sec × n na cały egzamin – jak na prawdziwym egzaminie; zegar stoi, gdy czytasz wyjaśnienie)
+const EXAM_SEC = Math.max(5, +EXAM.sec || 25), EXAM_POOL = EXAM.pace === 'total';
+const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return EXAM_POOL ? Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0') : t + ' s'; };
 const LEVELS = (C0.levels && C0.levels.length === 6) ? C0.levels : EN ? [
   { min: 0, code: 'A1', name: 'Beginning', note: 'First steps. Everyone starts here.' },
   { min: 400, code: 'A2', name: 'Warm-up', note: 'The basics are starting to stick.' },
@@ -2446,7 +2452,7 @@ const TX = EN ? {
   stageN: (n, t) => `Stage ${n}: ${t}`, inLesson: 'In this lesson:',
   replayNote: 'This is a replay of a completed lesson: the cards and questions once more.', letsGo: 'Let’s start',
   firstAnswerXP: ' (+15 XP for your first answer)', save: 'Save', saveNext: 'Save and continue', skip: 'Skip', skipForNow: 'Skip for now',
-  bossRules: (short, p) => `6 quick timed questions (20 seconds each) and 3 questions from ${short}. Pass mark: ${p} – then the next stage opens. You can retake it.`,
+  bossRules: (short, p) => `6 quick timed questions (${BOSS_SEC} seconds each) and 3 questions from ${short}. Pass mark: ${p} – then the next stage opens. You can retake it.`,
   okOfN: (ok, n) => `${ok} of ${n} answers correct.`,
   bossNod: (who, n, title) => `${who} nods. Stage ${n} – “${title}” – is now open.`,
   lastStage: name => `That was the last stage. Time for: ${name}.`,
@@ -2544,7 +2550,7 @@ const TX = EN ? {
   stageN: (n, t) => `Etap ${n}: ${t}`, inLesson: 'W tej lekcji:',
   replayNote: 'To powtórka ukończonej lekcji: karty i sprawdzian jeszcze raz.', letsGo: 'Zaczynamy',
   firstAnswerXP: ' (+15 XP za pierwszą odpowiedź)', save: 'Zapisz', saveNext: 'Zapisz i dalej', skip: 'Pomiń', skipForNow: 'Pomiń na razie',
-  bossRules: (short, p) => `6 szybkich pytań na czas (20 sekund każde) i 3 pytania od ${short}. Zaliczasz od ${p} – wtedy otwiera się kolejny etap. Można powtarzać.`,
+  bossRules: (short, p) => `6 szybkich pytań na czas (${BOSS_SEC} sekund każde) i 3 pytania od ${short}. Zaliczasz od ${p} – wtedy otwiera się kolejny etap. Można powtarzać.`,
   okOfN: (ok, n) => `${ok} z ${n} odpowiedzi trafionych.`,
   bossNod: (who, n, title) => `${who} kiwa głową. Etap ${n} – „${title}” – jest otwarty.`,
   lastStage: name => `Ostatni etap za Tobą. Czas na ${name}.`,
@@ -2747,7 +2753,7 @@ function lessonSteps(ls, replay) {
 }
 function bossSteps(st) {
   const steps = [{ type: 'boss-intro', stage: st }];
-  shuffle(st.lessons.flatMap(l => l.cards)).slice(0, 6).forEach(c => steps.push({ type: 'quiz', q: qAuto(c, ['exp', 'rev', 'def', 'phrase']), timed: 20, boss: true, ph: BOSS.name }));
+  shuffle(st.lessons.flatMap(l => l.cards)).slice(0, 6).forEach(c => steps.push({ type: 'quiz', q: qAuto(c, ['exp', 'rev', 'def', 'phrase']), timed: BOSS_SEC, boss: true, ph: BOSS.name }));
   st.boss.q.forEach(q => steps.push({ type: 'quiz', q: qBoss(q, st.boss.short), boss: true, ph: BOSS.name }));
   steps.push({ type: 'boss-result', stage: st });
   return steps;
@@ -2757,7 +2763,7 @@ function demoSteps() {
   const n = EXAM_N, half = Math.floor(n / 2);
   const cards = shuffle(CARD_LIST);
   const qs = cards.slice(0, half).map(c => c.q ? qHand(c) : qDef(c)).concat(cards.slice(half, n).map(c => qAuto(c, ['exp', 'rev', 'def', 'phrase'])));
-  shuffle(qs).forEach(q => steps.push({ type: 'quiz', q, timed: 25, demo: true, ph: EXAM.name }));
+  shuffle(qs).forEach(q => steps.push({ type: 'quiz', q, timed: EXAM_SEC, pooled: EXAM_POOL, demo: true, ph: EXAM.name }));
   steps.push({ type: 'demo-result' });
   return steps;
 }
@@ -2782,7 +2788,7 @@ function startSession(kind, opts = {}) {
   else if (kind === 'demo') demoSteps().forEach(s => steps.push(s));
   if (!steps.length) { toast(kind === 'mini' ? TX.nothingDue : TX.noSteps); return; }
   steps.push({ type: 'summary' });
-  session = { kind, steps, i: 0, xp: 0, correct: 0, wrong: 0, reviewed: 0, learned: 0, boss: { ok: 0, n: 0 }, demo: { ok: 0, n: 0 }, levelStart: levelOf(S.xp).i, requeued: {}, exitAsk: false, lessonDone: null };
+  session = { kind, steps, i: 0, xp: 0, correct: 0, wrong: 0, reviewed: 0, learned: 0, boss: { ok: 0, n: 0 }, demo: { ok: 0, n: 0 }, levelStart: levelOf(S.xp).i, requeued: {}, exitAsk: false, lessonDone: null, examLeft: EXAM_SEC * EXAM_N * 1000 };
   window.scrollTo(0, 0); render();
 }
 function advance() {
@@ -2790,6 +2796,7 @@ function advance() {
   if (!session) return;
   session.exitAsk = false;
   session.i++;
+  while (session.i < session.steps.length && session.steps[session.i].pooled && session.examLeft <= 0) { session.demo.n++; session.wrong++; session.i++; }
   while (session.i < session.steps.length && session.steps[session.i].type === 'mark') {
     const m = session.steps[session.i];
     if (!S.lessonsDone[m.lesson.id]) { S.lessonsDone[m.lesson.id] = Date.now(); addXP(40); session.lessonDone = m.lesson; checkBadges(); }
@@ -2815,6 +2822,7 @@ function gradeReview(g) {
 function answer(idx) {
   const st = cur(); if (!st || !st.q || st.answered != null) return;
   const q = st.q; st.answered = idx; clearTimer();
+  if (st.pooled) session.examLeft = idx === -1 ? 0 : Math.max(0, st.deadline - Date.now());
   const ok = idx === q.correct;
   if (ok) { session.correct++; addXP(8); } else { session.wrong++; addXP(2); }
   bumpRun(ok);
@@ -2869,12 +2877,12 @@ let timerInt = null;
 function clearTimer() { if (timerInt) { clearInterval(timerInt); timerInt = null; } }
 function startTimer(st) {
   clearTimer(); if (!st.timed || st.answered != null) return;
-  if (!st.deadline) st.deadline = Date.now() + st.timed * 1000;
-  const total = st.timed * 1000;
+  if (!st.deadline) st.deadline = Date.now() + (st.pooled ? session.examLeft : st.timed * 1000);
+  const total = st.pooled ? EXAM_SEC * EXAM_N * 1000 : st.timed * 1000;
   const tick = () => {
     const left = st.deadline - Date.now();
     const bar = document.getElementById('tbar'); if (bar) bar.style.width = Math.max(0, left / total * 100) + '%';
-    const lab = document.getElementById('tlab'); if (lab) lab.textContent = Math.max(0, Math.ceil(left / 1000)) + ' s';
+    const lab = document.getElementById('tlab'); if (lab) lab.textContent = st.pooled ? mmss(left) : Math.max(0, Math.ceil(left / 1000)) + ' s';
     if (left <= 0) { clearTimer(); if (cur() === st) answer(-1); }
   };
   tick(); timerInt = setInterval(tick, 100);
@@ -2902,7 +2910,7 @@ function heroHTML(p) {
   const rev = due ? TX.warmup(due) : '';
   if (p.done && (S.demo || 0) < DEMO_PASS) {
     kicker = EXAM.kicker; title = EXAM.name;
-    lines = [TX.examTimed(EXAM_N), TX.passFrom(pct(EXAM.pass))]; btn = EXAM.go; act = 'demo'; est = 10;
+    lines = [TX.examTimed(EXAM_N), TX.passFrom(pct(EXAM.pass))]; btn = EXAM.go; act = 'demo'; est = EXAM_POOL ? Math.round(EXAM_SEC * EXAM_N / 60) : 10;
   } else if (p.done) {
     kicker = TX.masterMode; title = L.masterTitle;
     lines = [p.due ? rev : TX.masterWarm, TX.master6]; est = Math.max(6, Math.round(due * 0.4 + 4));
@@ -3020,7 +3028,7 @@ function questionBody(q, ans, act = 'opt') {
 }
 function renderQuiz(st) {
   const q = st.q, answered = st.answered != null; let h = '';
-  if (st.timed && !answered) { const left = st.deadline ? Math.max(0, st.deadline - Date.now()) : st.timed * 1000; h += `<div class="timer"><i id="tbar" style="width:${left / (st.timed * 10)}%"></i></div><p class="micro right tnum" id="tlab">${Math.ceil(left / 1000)} s</p>`; }
+  if (st.timed && !answered) { const full = st.pooled ? EXAM_SEC * EXAM_N * 1000 : st.timed * 1000; const left = st.deadline ? Math.max(0, st.deadline - Date.now()) : (st.pooled ? session.examLeft : full); h += `<div class="timer"><i id="tbar" style="width:${left / full * 100}%"></i></div><p class="micro right tnum" id="tlab">${st.pooled ? mmss(left) : Math.ceil(left / 1000) + ' s'}</p>`; }
   h += questionBody(q, answered ? st.answered : null);
   if (answered) {
     const ok = st.answered === q.correct;

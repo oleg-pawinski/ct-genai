@@ -2,13 +2,13 @@
 
 A phone course preparing for the ISTQB® Certified Tester – Testing with Generative AI (CT-GenAI) exam, syllabus v1.1.
 
-Content version: **4** · 4 stages, 20 lessons, 103 cards
+Content version: **6** · 4 stages, 20 lessons, 103 cards
 
-## What’s new in version 4
+## What’s new in version 6
 
-- **No more open task at the end of a lesson.** The exam has only multiple-choice questions, so each lesson now ends after ‘Check yourself’.
-- The Notebook keeps your starred terms; the Notebook badge now asks for 10 starred terms.
-- Your progress, reviews and badges stay exactly as they were.
+- **More time for timed questions.** Exam Day: 30 minutes for 30 questions on one shared clock (instead of 25 seconds each). The 6 quick questions in project reviews: 45 seconds each (instead of 20).
+- The Exam Day clock stops while you read the explanation after each answer.
+- Your progress, best scores and badges stay exactly as they were.
 
 ## Contents
 
